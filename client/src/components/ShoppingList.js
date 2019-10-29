@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
-import { CSSTransitions, TransitionGroup } from 'react-transition-group'; 
+import { CSSTransition, TransitionGroup } from 'react-transition-group'; 
 import uuid from 'uuid';
 
 
@@ -13,9 +13,22 @@ class ShoppingList extends Component {
      }
     render() { 
         // const items = this.state; 
-        const items = this.state.items.map(item => {
+        const items = this.state.items.map(({id, name}) => {
             return(
-                <ListGroupItem key={item.id}> {item.name} </ListGroupItem>
+                <CSSTransition key={id} timeout={500} classNames="fade">
+                    <ListGroupItem key={id}>
+                    <Button
+                    className="remove-btn"
+                    color="danger"
+                    size="sm"
+                    onClick={()=> {
+                        this.setState(state => ({
+                            items:state.items.filter(item => item.id !== id)
+                        }));
+                    }}
+                    >&times</Button>
+                     {name} </ListGroupItem>
+                </CSSTransition>
             )
         });
         return ( 
@@ -29,8 +42,7 @@ class ShoppingList extends Component {
                         if (name){
                             this.setState({items: [...this.state.items, {id:uuid(), name}]})
                         }
-                    }}
-                    >Add Item</Button>
+                    }}> Add Item</Button>
 
                     <ListGroup>
                         <TransitionGroup  className="shopping-list">
